@@ -60,25 +60,22 @@ function initControls()
 				{
 					if(e.which == 68) 
 					{
-						controlX(0.2);
+						controlX(0.05);
 					}
 					if(e.which == 65) 
 					{
-						controlX(-0.2);
+						controlX(-0.05);
 					}
 					if(e.which == 87) 
 					{
-						controlY(0.2);
+						controlY(0.05);
 					}
 					if(e.which == 83) 
 					{
-						controlY(-0.2);
+						controlY(-0.05);
 					}
 
-					if(e.which == 32) 
-					{
-						fire();
-					}
+
 				});
 
 				$(document).on('keyup',function(e) 
@@ -98,6 +95,10 @@ function initControls()
 					if(e.which == 83) 
 					{
 						yRelease()
+					}
+					if(e.which == 32) 
+					{
+						fire();
 					}
 				});
 			}

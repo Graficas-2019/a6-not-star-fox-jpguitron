@@ -230,14 +230,35 @@ function animate() {
 
     }
 
+    
+
+
+    xA = (window.innerWidth) * 2 - 1;
+    yA = - (window.innerHeight ) * 2 + 1;
+    console.log(xA,yA);
+
     if (xClicked)
     {
-        spaceShip.position.x += xMove;
+
+
+        xA = 0;
+        //xA = spaceShip.position.x / screen.width * Screen.PrimaryScreen.Bounds.Width;
+        
+        
+        if(xA < screen.width && xA >= 100)
+        {
+            spaceShip.position.x += xMove*deltat;
+        }
+        
     }
 
     if (yClicked)
     {
-        spaceShip.position.y += yMove;
+        yA = Convert.ToInt16( spaceShip.position.y / 1080 * Screen.PrimaryScreen.Bounds.Height);
+        if(spaceShip.position.y < screen.height && spaceShip.position.y > 0)
+        {
+            spaceShip.position.y += yMove*deltat;
+        }
     }
 
     if(deltat3>1000)
