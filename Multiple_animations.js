@@ -4,7 +4,7 @@ root = null,
 group = null;
 
 var timeLimit = 60;
-
+var mesh = null;
 var objLoader = null;
 var tree = null;
 var spaceShip = null;
@@ -88,7 +88,7 @@ function fire()
     if(game)
     {
         var position = new THREE.Vector3();
-        position.getPositionFromMatrix( spaceShip.matrixWorld );
+        position.setFromMatrixPosition( spaceShip.matrixWorld );
 
         var newBullet = cloneFbx(bullet);
         newBullet.position.set(position.x,position.y,90); 
@@ -233,31 +233,45 @@ function animate() {
     
 
 
-    xA = (window.innerWidth) * 2 - 1;
-    yA = - (window.innerHeight ) * 2 + 1;
-    console.log(xA,yA);
 
     if (xClicked)
     {
-
-
-        xA = 0;
-        //xA = spaceShip.position.x / screen.width * Screen.PrimaryScreen.Bounds.Width;
         
+        var c = Math.tan(22.5)*40;
+        var aspect = window.innerWidth / window.innerHeight;
+        co = aspect*c;
         
-        if(xA < screen.width && xA >= 100)
+        if(spaceShip.position.x <= co && spaceShip.position.x >= co*-1)
         {
             spaceShip.position.x += xMove*deltat;
+            if(spaceShip.position.x < co*-1)
+            {
+                spaceShip.position.x = co*-1;
+            }
+            else if(spaceShip.position.x > co)
+            {
+                spaceShip.position.x = co;
+            }
         }
         
     }
 
     if (yClicked)
     {
-        yA = Convert.ToInt16( spaceShip.position.y / 1080 * Screen.PrimaryScreen.Bounds.Height);
-        if(spaceShip.position.y < screen.height && spaceShip.position.y > 0)
+        var co = Math.tan(22.5)*40;
+        if(spaceShip.position.y <= co && spaceShip.position.y >= 0)
         {
-            spaceShip.position.y += yMove*deltat;
+
+                spaceShip.position.y += yMove*deltat;
+                if(spaceShip.position.y < 0)
+                {
+                    spaceShip.position.y = 0;
+                }
+                else if(spaceShip.position.y > co)
+                {
+                    spaceShip.position.y = co;
+                }
+
         }
     }
 
@@ -266,7 +280,6 @@ function animate() {
         gameStarted = now;
         gameMinutes+=1;
         document.getElementById("time").innerHTML = 60-gameMinutes;
-        console.log(trees);
         if(gameMinutes>=60)
         {
             document.getElementById("startButton").disabled = false;
@@ -289,7 +302,7 @@ function animate() {
             secondBB = new THREE.Box3().setFromObject(trees[actual]);
 
             trees[actual].position.z += speeds[actual] * deltat;
-            var collision = firstBB.isIntersectionBox(secondBB);
+            var collision = firstBB.intersectsBox(secondBB);
 
 
             if(trees[actual].position.z > 120 || collision)
@@ -318,7 +331,7 @@ function animate() {
 
             
             secondBB = new THREE.Box3().setFromObject(spaceShips[actual]);
-            var collision = firstBB.isIntersectionBox(secondBB);
+            var collision = firstBB.intersectsBox(secondBB);
             
             if(spaceShips[actual].position.z > 120 || collision)
             {   
@@ -354,7 +367,7 @@ function animate() {
                 for(var actual2 = 0; actual2<spaceShips.length;actual2++)
                 {
                     secondBB = new THREE.Box3().setFromObject(spaceShips[actual2]);
-                    var collision = firstBB.isIntersectionBox(secondBB);
+                    var collision = firstBB.intersectsBox(secondBB);
                     if(collision && spaceShips[actual2].status == 1 )
                     {
                         spaceShips[actual2].status = 0;
@@ -450,7 +463,7 @@ function loadObj()
     });
 
     
-    var geometry = new THREE.SphereGeometry( 0.2, 32, 32 );
+    var geometry = new THREE.SphereGeometry( 0.3, 32, 32 );
     var material = new THREE.MeshBasicMaterial( {color: 0xff0000} );
     bullet = new THREE.Mesh( geometry, material );
     //scene.add( bullet );
@@ -521,7 +534,7 @@ function createScene(canvas) {
     
     // Put in a ground plane to show off the lighting
     geometry = new THREE.PlaneGeometry(300, 300, 50, 50);
-    var mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({color:color, map:map, side:THREE.DoubleSide}));
+    mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({color:color, map:map, side:THREE.DoubleSide}));
 
     mesh.rotation.x = -Math.PI / 2;
     mesh.position.y = -4.02;
