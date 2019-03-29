@@ -35,7 +35,8 @@ var lastSpaceShipTime = 0;
 var nextSpaceShipSpawnTime = 1000;
 var lifePoints = 100;
 
-
+var animator = null;
+var spaceShipSize = null;
 
 var treesSpawned = 0;
 var highScore = 0;
@@ -45,11 +46,15 @@ var shipCreated = true;
 var enemiesDamage = 10;
 var treeDamage = 10;
 
-var xClicked = false;
-var xMove = 0;
+var xRClicked = false;
+var xRMove = 0;
+var xLClicked = false;
+var xLMove = 0;
 
-var yClicked = false;
-var yMove = 0;
+var yRClicked = false;
+var yRMove = 0;
+var yLClicked = false;
+var yLMove = 0;
 
 function getRandomInt(min, max) 
 {
@@ -58,30 +63,61 @@ function getRandomInt(min, max)
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function controlX(location)
+function controlXR(location)
 {
     if(game)
     {
-        xClicked = true;
-        xMove = location;
+        xRClicked = true;
+        xRMove = location;
     }
     
 }
 
-function xRelease()
-{
-    xClicked = false;
-}
-
-function controlY(location)
+function controlXL(location)
 {
     if(game)
     {
-        yClicked = true;
-        yMove = location;
+        xLClicked = true;
+        xLMove = location;
     }
     
 }
+
+function controlYR(location)
+{
+    if(game)
+    {
+        yRClicked = true;
+        yRMove = location;
+    }
+    
+}
+function controlYL(location)
+{
+    if(game)
+    {
+        yLClicked = true;
+        yLMove = location;
+    }
+    
+}
+function xRRelease()
+{
+    xRClicked = false;
+}
+function xLRelease()
+{
+    xLClicked = false;
+}
+function yRRelease()
+{
+    yRClicked = false;
+}
+function yLRelease()
+{
+    yLClicked = false;
+}
+
 
 function fire()
 {
@@ -97,10 +133,6 @@ function fire()
     }
 }
 
-function yRelease()
-{
-    yClicked = false;
-}
 
 function startGame()
 {
@@ -150,7 +182,7 @@ function startGame()
 }
 
 function animate() {
-
+    KF.update();
     var now = Date.now();
     var deltat = now - currentTime;
     var deltat2 = now - lastTreeTime;
@@ -234,35 +266,75 @@ function animate() {
 
 
 
-    if (xClicked)
+    if (xRClicked)
     {
         
         var c = Math.tan(22.5)*40;
         var aspect = window.innerWidth / window.innerHeight;
         co = aspect*c;
         
-        if(spaceShip.position.x <= co && spaceShip.position.x >= co*-1)
+        if(spaceShip.position.x <= co-(spaceShipSize.x) && spaceShip.position.x >= (co-(spaceShipSize.x))*-1)
         {
-            spaceShip.position.x += xMove*deltat;
-            if(spaceShip.position.x < co*-1)
+            spaceShip.position.x += xRMove*deltat;
+            if(spaceShip.position.x < (co-(spaceShipSize.x))*-1)
             {
-                spaceShip.position.x = co*-1;
+                spaceShip.position.x = (co-(spaceShipSize.x))*-1;
             }
-            else if(spaceShip.position.x > co)
+            else if(spaceShip.position.x > co-(spaceShipSize.x))
             {
-                spaceShip.position.x = co;
+                spaceShip.position.x = co-(spaceShipSize.x);
             }
         }
         
     }
 
-    if (yClicked)
+    if (xLClicked)
+    {
+        
+        var c = Math.tan(22.5)*40;
+        var aspect = window.innerWidth / window.innerHeight;
+        co = aspect*c;
+        
+        if(spaceShip.position.x <= co-(spaceShipSize.x) && spaceShip.position.x >= (co-(spaceShipSize.x))*-1)
+        {
+            spaceShip.position.x += xLMove*deltat;
+            if(spaceShip.position.x < (co-(spaceShipSize.x))*-1)
+            {
+                spaceShip.position.x = (co-(spaceShipSize.x))*-1;
+            }
+            else if(spaceShip.position.x > co-(spaceShipSize.x))
+            {
+                spaceShip.position.x = co-(spaceShipSize.x);
+            }
+        }
+    }
+
+    if (yRClicked)
     {
         var co = Math.tan(22.5)*40;
         if(spaceShip.position.y <= co && spaceShip.position.y >= 0)
         {
 
-                spaceShip.position.y += yMove*deltat;
+                spaceShip.position.y += yRMove*deltat;
+                if(spaceShip.position.y < 0)
+                {
+                    spaceShip.position.y = 0;
+                }
+                else if(spaceShip.position.y > co)
+                {
+                    spaceShip.position.y = co;
+                }
+
+        }
+    }
+
+    if (yLClicked)
+    {
+        var co = Math.tan(22.5)*40;
+        if(spaceShip.position.y <= co && spaceShip.position.y >= 0)
+        {
+
+                spaceShip.position.y += yLMove*deltat;
                 if(spaceShip.position.y < 0)
                 {
                     spaceShip.position.y = 0;
@@ -387,6 +459,28 @@ function animate() {
 
 }
 
+function playAnimations()
+{    
+    animator = new KF.KeyFrameAnimator;
+    animator.init({ 
+        interps:
+            [
+                { 
+                    keys:[0, 1], 
+                    values:[
+                            { x : 0, y : 0 },
+                            { x : 0, y : 1 },
+                            ],
+                    target:mesh.material.map.offset
+                },
+            ],
+        loop: true,
+        duration: 1*1000,
+    });
+        animator.start();
+            
+}
+
 function onWindowResize() 
 {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -404,6 +498,7 @@ function run() {
     if(game)
     {
         animate();
+        
     }
     
 }
@@ -460,6 +555,9 @@ function loadObj()
     spaceShip.scale.set(1,1,1);
     object.rotation.y += Math.PI; 
     scene.add(spaceShip);
+    var box = new THREE.Box3().setFromObject(spaceShip);
+    spaceShipSize = box.getSize();
+    console.log( spaceShipSize );
     });
 
     
@@ -478,7 +576,7 @@ function createScene(canvas) {
     // Turn on shadows
     renderer.shadowMap.enabled = true;
     // Options are THREE.BasicShadowMap, THREE.PCFShadowMap, PCFSoftShadowMap
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     
     // Create a new Three.js scene
     scene = new THREE.Scene();
@@ -513,6 +611,18 @@ function createScene(canvas) {
     
     spotLight.shadow.mapSize.width = SHADOW_MAP_WIDTH;
     spotLight.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+
+
+    // Point light
+    var pointLight = new THREE.PointLight (0xffffff, 1, 1000);
+    pointLight.shadow.camera.far = 4000;
+    pointLight.shadow.mapSize.width = SHADOW_MAP_WIDTH;
+    pointLight.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+
+    pointLight.position.set(0, 500, 300);
+    pointLight.castShadow = true;
+    
+    scene.add(pointLight);
 
     //ambientLight = new THREE.AmbientLight ( 0x888888 );
     //root.add(ambientLight);

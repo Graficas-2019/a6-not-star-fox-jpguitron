@@ -53,26 +53,26 @@ function initControls()
 
 				// initialize the controls
 				initControls();
-				
+				playAnimations();
 		        // Run the run loop
 				run();
 				$(document).on('keydown',function(e) 
 				{
 					if(e.which == 68) 
 					{
-						controlX(0.05);
+						controlXR(0.05);
 					}
 					if(e.which == 65) 
 					{
-						controlX(-0.05);
+						controlXL(-0.05);
 					}
 					if(e.which == 87) 
 					{
-						controlY(0.05);
+						controlYR(0.05);
 					}
 					if(e.which == 83) 
 					{
-						controlY(-0.05);
+						controlYL(-0.05);
 					}
 
 
@@ -82,19 +82,19 @@ function initControls()
 				{
 					if(e.which == 68) 
 					{
-						xRelease()
+						xRRelease()
 					}
 					if(e.which == 65) 
 					{
-						xRelease()
+						xLRelease()
 					}
 					if(e.which == 87) 
 					{
-						yRelease()
+						yRRelease()
 					}
 					if(e.which == 83) 
 					{
-						yRelease()
+						yLRelease()
 					}
 					if(e.which == 32) 
 					{
